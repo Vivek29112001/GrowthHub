@@ -166,8 +166,44 @@ function Dashboard() {
         {isLoading ? (
           <div className="py-10 text-center text-sm text-muted-foreground">Loading…</div>
         ) : milestones.length === 0 && !showAddMilestone ? (
-          <div className="rounded-xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-            No milestones yet. Click <b>Add milestone</b> to start your roadmap.
+          <div className="grid gap-4 sm:grid-cols-2">
+            <button
+              onClick={() => pickRoadmap("ai")}
+              disabled={seeding !== null}
+              className="group rounded-xl border border-border bg-card p-6 text-left transition hover:border-primary hover:shadow-md disabled:opacity-60"
+            >
+              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-primary">
+                <Sparkles className="h-3.5 w-3.5" /> Recommended
+              </div>
+              <h3 className="mt-2 text-lg font-semibold">AI Engineer Roadmap</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                MAANG/FAANG-ready plan · 15 milestones · Python → LLMs → RAG → Agents →
+                Production → System Design → Interview prep.
+              </p>
+              <div className="mt-3 text-xs font-medium text-primary">
+                {seeding === "ai" ? "Setting up…" : "Use this roadmap →"}
+              </div>
+            </button>
+            <button
+              onClick={() => pickRoadmap("sample")}
+              disabled={seeding !== null}
+              className="group rounded-xl border border-border bg-card p-6 text-left transition hover:border-primary hover:shadow-md disabled:opacity-60"
+            >
+              <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Sample
+              </div>
+              <h3 className="mt-2 text-lg font-semibold">Sample 120-day AI Roadmap</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Lighter starter roadmap — 15 milestones covering ML, DL, LLMs, RAG,
+                MLOps, projects & job prep. Fully editable.
+              </p>
+              <div className="mt-3 text-xs font-medium text-primary">
+                {seeding === "sample" ? "Setting up…" : "Use sample →"}
+              </div>
+            </button>
+            <div className="sm:col-span-2 rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+              Or click <b>Add milestone</b> above to start from scratch.
+            </div>
           </div>
         ) : (
           <div className="space-y-3">
