@@ -1,10 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { CheckCircle2, Circle, Loader2, Target, Trophy, Sparkles } from "lucide-react";
+import { CheckCircle2, Circle, Loader2, Target, Trophy, Sparkles, LogIn, LogOut, Lock } from "lucide-react";
 
 import { fetchRoadmap, updateTopic, type Topic } from "@/lib/roadmap";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
