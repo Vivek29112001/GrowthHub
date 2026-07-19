@@ -108,15 +108,8 @@ function Dashboard() {
                 saves to your private database.
               </p>
             </div>
-            <button
-              onClick={async () => {
-                await supabase.auth.signOut();
-              }}
-              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
-            >
-              <LogOut className="h-3.5 w-3.5" /> Sign out
-            </button>
           </div>
+
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <StatCard icon={<Target className="h-4 w-4" />} label="Milestones" value={`${milestones.length}`} />
