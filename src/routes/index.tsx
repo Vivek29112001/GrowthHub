@@ -1,14 +1,13 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import {
   CheckCircle2,
   Circle,
-  Loader2,
   Target,
   Trophy,
+  Loader2,
   Sparkles,
-  LogOut,
   Plus,
   Pencil,
   Trash2,
@@ -28,8 +27,8 @@ import {
   type Milestone,
 } from "@/lib/roadmap";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/supabase/client";
+import { AppLayout } from "@/components/AppLayout";
+import { seedDefaultRoadmapIfEmpty } from "@/lib/default-roadmap";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -44,35 +43,35 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "website" },
     ],
   }),
-  component: RoadmapPage,
+  component: () => (
+    <AppLayout>
+      <Dashboard />
+    </AppLayout>
+  ),
 });
-
-function RoadmapPage() {
-  const { user, loading } = useAuth();
-  const nav = useNavigate();
-
-  useEffect(() => {
-    if (!loading && !user) nav({ to: "/auth" });
-  }, [loading, user, nav]);
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-muted-foreground">
-        <Loader2 className="h-5 w-5 animate-spin" />
-      </div>
-    );
-  }
-  if (!user) return null;
-
-  return <Dashboard />;
-}
 
 function Dashboard() {
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["roadmap"], queryFn: fetchRoadmap });
+  const [seeded, setSeeded] = useState(false);
+
+  useEffect(() => {
+    // Auto-seed the default AI Engineer roadmap on first login (when the user
+    // has zero milestones). The user can then edit, delete, or add anything.
+    if (!seeded && data && data.milestones.length === 0) {
+      setSeeded(true);
+      seedDefaultRoadmapIfEmpty()
+        .then((did) => {
+          if (did) qc.invalidateQueries({ queryKey: ["roadmap"] });
+        })
+        .catch((e) => console.error("Seed failed:", e));
+    }
+  }, [data, seeded, qc]);
 
   const milestones = data?.milestones ?? [];
   const topics = data?.topics ?? [];
+
+
 
   const stats = useMemo(() => {
     const total = topics.length;
