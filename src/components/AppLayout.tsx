@@ -37,7 +37,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background text-foreground">
       <nav className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-1 overflow-x-auto px-4 py-2">
-          <div className="mr-2 text-sm font-semibold">Roadmap Tracker</div>
+          <div className="mr-2 text-sm font-semibold">GrowthHub</div>
           <div className="flex flex-1 gap-1">
             {NAV.map((n) => {
               const Icon = n.icon;

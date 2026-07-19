@@ -9,7 +9,7 @@ import { listCertificates } from "@/lib/certificates";
 import { listInterviews } from "@/lib/interviews";
 
 export const Route = createFileRoute("/insights")({
-  head: () => ({ meta: [{ title: "Monthly Insights — Roadmap Tracker" }] }),
+  head: () => ({ meta: [{ title: "Monthly Insights — GrowthHub" }] }),
   component: () => (
     <AppLayout>
       <InsightsPage />

@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Sign in — Roadmap Tracker" }] }),
+  head: () => ({ meta: [{ title: "Sign in — GrowthHub" }] }),
   component: AuthPage,
 });
 
@@ -56,7 +56,7 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm rounded-xl border border-border bg-card p-6">
         <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          <Sparkles className="h-3.5 w-3.5" /> Roadmap Tracker
+          <Sparkles className="h-3.5 w-3.5" /> GrowthHub
         </div>
 
         {sentTo ? (

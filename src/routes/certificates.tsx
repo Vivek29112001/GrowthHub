@@ -6,7 +6,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { listCertificates, addCertificate, deleteCertificate } from "@/lib/certificates";
 
 export const Route = createFileRoute("/certificates")({
-  head: () => ({ meta: [{ title: "Certificates — Roadmap Tracker" }] }),
+  head: () => ({ meta: [{ title: "Certificates — GrowthHub" }] }),
   component: () => (
     <AppLayout>
       <CertificatesPage />

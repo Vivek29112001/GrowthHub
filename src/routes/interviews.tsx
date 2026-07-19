@@ -13,7 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/interviews")({
-  head: () => ({ meta: [{ title: "Interviews — Roadmap Tracker" }] }),
+  head: () => ({ meta: [{ title: "Interviews — GrowthHub" }] }),
   component: () => (
     <AppLayout>
       <InterviewsPage />
