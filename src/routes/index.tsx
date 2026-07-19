@@ -1,10 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { CheckCircle2, Circle, Loader2, Target, Trophy, Sparkles } from "lucide-react";
+import { CheckCircle2, Circle, Loader2, Target, Trophy, Sparkles, LogIn, LogOut, Lock } from "lucide-react";
 
 import { fetchRoadmap, updateTopic, type Topic } from "@/lib/roadmap";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -41,6 +43,9 @@ function daysLeft() {
 function RoadmapPage() {
   const { data } = useQuery({ queryKey: ["roadmap"], queryFn: fetchRoadmap });
   const qc = useQueryClient();
+  const { user } = useAuth();
+  const nav = useNavigate();
+  const canEdit = !!user;
 
   const mutate = useMutation({
     mutationFn: ({ id, patch }: { id: string; patch: Partial<Topic> }) => updateTopic(id, patch),
@@ -72,17 +77,41 @@ function RoadmapPage() {
       {/* Hero */}
       <header className="border-b border-border/60 bg-gradient-to-b from-secondary/40 to-transparent">
         <div className="mx-auto max-w-6xl px-6 py-14">
-          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-            <Sparkles className="h-3.5 w-3.5" />
-            120-day learning map
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                <Sparkles className="h-3.5 w-3.5" />
+                120-day learning map
+              </div>
+              <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
+                AI Engineer Roadmap Tracker
+              </h1>
+              <p className="mt-3 max-w-2xl text-base text-muted-foreground">
+                Vivek Sharma · MAANG/FAANG-level AI Engineer readiness. Every milestone, every topic —
+                tracked digitally, saved to your database.
+              </p>
+            </div>
+            <div className="flex-none">
+              {user ? (
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                  }}
+                  className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="h-3.5 w-3.5" /> Sign out
+                </button>
+              ) : (
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                >
+                  <LogIn className="h-3.5 w-3.5" /> Sign in to edit
+                </Link>
+              )}
+            </div>
           </div>
-          <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
-            AI Engineer Roadmap Tracker
-          </h1>
-          <p className="mt-3 max-w-2xl text-base text-muted-foreground">
-            Vivek Sharma · MAANG/FAANG-level AI Engineer readiness. Every milestone, every topic —
-            tracked digitally, saved to your database.
-          </p>
+
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <StatCard
@@ -164,8 +193,21 @@ function RoadmapPage() {
 
                 {isOpen && (
                   <div className="border-t border-border bg-background/50 px-5 py-4">
+                    {!canEdit && (
+                      <div className="mb-3 flex items-center gap-2 rounded-md border border-border bg-secondary/60 px-3 py-2 text-xs text-muted-foreground">
+                        <Lock className="h-3.5 w-3.5" />
+                        <span>Viewing only.</span>
+                        <button
+                          onClick={() => nav({ to: "/auth" })}
+                          className="ml-auto font-medium text-foreground hover:underline"
+                        >
+                          Sign in to edit
+                        </button>
+                      </div>
+                    )}
                     <TopicList
                       topics={mTopics}
+                      canEdit={canEdit}
                       onToggle={(t) =>
                         mutate.mutate({ id: t.id, patch: { done: !t.done, in_progress: false } })
                       }
@@ -190,6 +232,7 @@ function RoadmapPage() {
     </div>
   );
 }
+
 
 function StatCard({
   icon,
@@ -218,10 +261,12 @@ function TopicList({
   topics,
   onToggle,
   onProgress,
+  canEdit,
 }: {
   topics: Topic[];
   onToggle: (t: Topic) => void;
   onProgress: (t: Topic) => void;
+  canEdit: boolean;
 }) {
   // Group by group_label
   const groups = new Map<string, Topic[]>();
@@ -252,7 +297,8 @@ function TopicList({
                 <button
                   aria-label={t.done ? "Mark not done" : "Mark done"}
                   onClick={() => onToggle(t)}
-                  className="flex-none text-muted-foreground transition hover:text-primary"
+                  disabled={!canEdit}
+                  className="flex-none text-muted-foreground transition hover:text-primary disabled:cursor-not-allowed disabled:hover:text-muted-foreground"
                 >
                   {t.done ? (
                     <CheckCircle2 className="h-5 w-5 text-emerald-500" />
@@ -270,8 +316,9 @@ function TopicList({
                 </span>
                 <button
                   onClick={() => onProgress(t)}
+                  disabled={!canEdit}
                   className={cn(
-                    "flex-none rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider transition",
+                    "flex-none rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider transition disabled:cursor-not-allowed",
                     t.in_progress
                       ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
                       : "text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-secondary",
