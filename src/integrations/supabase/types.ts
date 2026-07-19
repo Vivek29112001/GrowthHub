@@ -14,7 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      milestones: {
+        Row: {
+          created_at: string
+          id: number
+          order_index: number
+          outcome: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id: number
+          order_index: number
+          outcome?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          order_index?: number
+          outcome?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      topics: {
+        Row: {
+          done: boolean
+          group_label: string | null
+          id: string
+          in_progress: boolean
+          milestone_id: number
+          notes: string | null
+          order_index: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          done?: boolean
+          group_label?: string | null
+          id?: string
+          in_progress?: boolean
+          milestone_id: number
+          notes?: string | null
+          order_index: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          done?: boolean
+          group_label?: string | null
+          id?: string
+          in_progress?: boolean
+          milestone_id?: number
+          notes?: string | null
+          order_index?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topics_milestone_id_fkey"
+            columns: ["milestone_id"]
+            isOneToOne: false
+            referencedRelation: "milestones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
