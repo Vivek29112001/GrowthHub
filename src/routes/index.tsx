@@ -193,8 +193,21 @@ function RoadmapPage() {
 
                 {isOpen && (
                   <div className="border-t border-border bg-background/50 px-5 py-4">
+                    {!canEdit && (
+                      <div className="mb-3 flex items-center gap-2 rounded-md border border-border bg-secondary/60 px-3 py-2 text-xs text-muted-foreground">
+                        <Lock className="h-3.5 w-3.5" />
+                        <span>Viewing only.</span>
+                        <button
+                          onClick={() => nav({ to: "/auth" })}
+                          className="ml-auto font-medium text-foreground hover:underline"
+                        >
+                          Sign in to edit
+                        </button>
+                      </div>
+                    )}
                     <TopicList
                       topics={mTopics}
+                      canEdit={canEdit}
                       onToggle={(t) =>
                         mutate.mutate({ id: t.id, patch: { done: !t.done, in_progress: false } })
                       }
@@ -219,6 +232,7 @@ function RoadmapPage() {
     </div>
   );
 }
+
 
 function StatCard({
   icon,
