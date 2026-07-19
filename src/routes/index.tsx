@@ -28,7 +28,8 @@ import {
 } from "@/lib/roadmap";
 import { cn } from "@/lib/utils";
 import { AppLayout } from "@/components/AppLayout";
-import { seedDefaultRoadmapIfEmpty } from "@/lib/default-roadmap";
+import { DEFAULT_AI_ROADMAP, seedDefaultRoadmapIfEmpty } from "@/lib/default-roadmap";
+import { AI_ENGINEER_ROADMAP, seedRoadmap } from "@/lib/ai-engineer-roadmap";
 
 export const Route = createFileRoute("/")({
   head: () => ({
