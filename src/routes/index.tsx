@@ -297,7 +297,8 @@ function TopicList({
                 <button
                   aria-label={t.done ? "Mark not done" : "Mark done"}
                   onClick={() => onToggle(t)}
-                  className="flex-none text-muted-foreground transition hover:text-primary"
+                  disabled={!canEdit}
+                  className="flex-none text-muted-foreground transition hover:text-primary disabled:cursor-not-allowed disabled:hover:text-muted-foreground"
                 >
                   {t.done ? (
                     <CheckCircle2 className="h-5 w-5 text-emerald-500" />
@@ -315,8 +316,9 @@ function TopicList({
                 </span>
                 <button
                   onClick={() => onProgress(t)}
+                  disabled={!canEdit}
                   className={cn(
-                    "flex-none rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider transition",
+                    "flex-none rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider transition disabled:cursor-not-allowed",
                     t.in_progress
                       ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
                       : "text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-secondary",
