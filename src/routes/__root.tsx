@@ -77,14 +77,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "AI Engineer Roadmap Tracker — Vivek Sharma" },
+      {
+        name: "description",
+        content:
+          "A 120-day learning map to MAANG/FAANG-level AI Engineer readiness. Track milestones and topics digitally.",
+      },
+      { name: "author", content: "Vivek Sharma" },
+      { property: "og:title", content: "AI Engineer Roadmap Tracker — Vivek Sharma" },
+      {
+        property: "og:description",
+        content: "Digital tracker for a 120-day AI Engineer learning roadmap.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
