@@ -14,6 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      certificates: {
+        Row: {
+          created_at: string
+          id: string
+          issue_date: string | null
+          issuer: string | null
+          notes: string | null
+          title: string
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          issue_date?: string | null
+          issuer?: string | null
+          notes?: string | null
+          title: string
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          issue_date?: string | null
+          issuer?: string | null
+          notes?: string | null
+          title?: string
+          url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      interviews: {
+        Row: {
+          company: string
+          created_at: string
+          id: string
+          interview_date: string
+          learnings: string | null
+          mistakes: string | null
+          outcome: string
+          questions: string | null
+          role: string | null
+          round: string | null
+          user_id: string
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          id?: string
+          interview_date?: string
+          learnings?: string | null
+          mistakes?: string | null
+          outcome?: string
+          questions?: string | null
+          role?: string | null
+          round?: string | null
+          user_id: string
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          id?: string
+          interview_date?: string
+          learnings?: string | null
+          mistakes?: string | null
+          outcome?: string
+          questions?: string | null
+          role?: string | null
+          round?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       milestones: {
         Row: {
           created_at: string
@@ -40,6 +115,57 @@ export type Database = {
           outcome?: string | null
           status?: string
           title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      resumes: {
+        Row: {
+          ai_suggestions: Json | null
+          content: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_suggestions?: Json | null
+          content: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_suggestions?: Json | null
+          content?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      study_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          minutes: number
+          notes: string | null
+          session_date: string
+          topic: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          minutes: number
+          notes?: string | null
+          session_date?: string
+          topic?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          minutes?: number
+          notes?: string | null
+          session_date?: string
+          topic?: string | null
           user_id?: string
         }
         Relationships: []
