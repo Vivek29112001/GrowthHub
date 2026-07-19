@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-import { LogOut, Target, Award, Briefcase, Clock, BarChart3, FileText, Loader2 } from "lucide-react";
+import { LogOut, Target, Award, Briefcase, Clock, BarChart3, FileText, Loader2, MessageSquare } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,7 @@ const NAV = [
   { to: "/interviews", label: "Interviews", icon: Briefcase },
   { to: "/resume", label: "Resume AI", icon: FileText },
   { to: "/insights", label: "Insights", icon: BarChart3 },
+  { to: "/assistant", label: "Coach", icon: MessageSquare },
 ] as const;
 
 export function AppLayout({ children }: { children: ReactNode }) {
