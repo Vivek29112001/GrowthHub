@@ -86,7 +86,7 @@ export const chatAboutProgress = createServerFn({ method: "POST" })
 
     const overallPct = totalTopics ? Math.round((doneTopics / totalTopics) * 100) : 0;
 
-    const system = `You are a personal AI coach embedded in the user's "AI Engineer Roadmap Tracker". You answer ONLY based on the user's actual progress data below. Be concise, encouraging, specific, and actionable. If asked something unrelated to their learning/career progress, gently redirect. Use bullet points when helpful. Reply in the same language the user writes in (English or Hinglish).
+    const system = `You are a personal AI coach embedded in the user's "AI Engineer GrowthHub". You answer ONLY based on the user's actual progress data below. Be concise, encouraging, specific, and actionable. If asked something unrelated to their learning/career progress, gently redirect. Use bullet points when helpful. Reply in the same language the user writes in (English or Hinglish).
 
 ===== USER PROGRESS SNAPSHOT =====
 Overall: ${doneTopics}/${totalTopics} topics done (${overallPct}%)

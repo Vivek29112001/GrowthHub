@@ -9,7 +9,7 @@ export const Route = createFileRoute("/assistant")({
   component: AssistantPage,
   head: () => ({
     meta: [
-      { title: "Progress Coach - Roadmap Tracker" },
+      { title: "Progress Coach - GrowthHub" },
       { name: "description", content: "Chat with your AI coach about your learning progress." },
     ],
   }),

@@ -33,12 +33,12 @@ import { seedDefaultRoadmapIfEmpty } from "@/lib/default-roadmap";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "My Roadmap Tracker" },
+      { title: "My GrowthHub" },
       {
         name: "description",
         content: "Build, edit, and track your own personal learning or project roadmap.",
       },
-      { property: "og:title", content: "My Roadmap Tracker" },
+      { property: "og:title", content: "My GrowthHub" },
       { property: "og:description", content: "Your personal digital roadmap tracker." },
       { property: "og:type", content: "website" },
     ],
@@ -101,7 +101,7 @@ function Dashboard() {
                 Your personal roadmap
               </div>
               <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-                My Roadmap Tracker
+                My GrowthHub
               </h1>
               <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
                 Add milestones and topics for any field — learning, projects, fitness, business. Everything

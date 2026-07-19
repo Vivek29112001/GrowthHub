@@ -8,7 +8,7 @@ import { getResume, saveResume, saveResumeSuggestions } from "@/lib/resumes";
 import { analyzeResumeAgainstRoadmap, applyResumeSuggestions } from "@/lib/ai.functions";
 
 export const Route = createFileRoute("/resume")({
-  head: () => ({ meta: [{ title: "Resume AI — Roadmap Tracker" }] }),
+  head: () => ({ meta: [{ title: "Resume AI — GrowthHub" }] }),
   component: () => (
     <AppLayout>
       <ResumePage />

@@ -12,7 +12,7 @@ import {
 } from "@/lib/study";
 
 export const Route = createFileRoute("/study")({
-  head: () => ({ meta: [{ title: "Study Tracker — Roadmap Tracker" }] }),
+  head: () => ({ meta: [{ title: "Study Tracker — GrowthHub" }] }),
   component: () => (
     <AppLayout>
       <StudyPage />
