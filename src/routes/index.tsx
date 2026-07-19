@@ -54,20 +54,23 @@ export const Route = createFileRoute("/")({
 function Dashboard() {
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["roadmap"], queryFn: fetchRoadmap });
-  const [seeded, setSeeded] = useState(false);
+  const [seeding, setSeeding] = useState<null | "ai" | "sample">(null);
 
-  useEffect(() => {
-    // Auto-seed the default AI Engineer roadmap on first login (when the user
-    // has zero milestones). The user can then edit, delete, or add anything.
-    if (!seeded && data && data.milestones.length === 0) {
-      setSeeded(true);
-      seedDefaultRoadmapIfEmpty()
-        .then((did) => {
-          if (did) qc.invalidateQueries({ queryKey: ["roadmap"] });
-        })
-        .catch((e) => console.error("Seed failed:", e));
+  async function pickRoadmap(kind: "ai" | "sample") {
+    setSeeding(kind);
+    try {
+      if (kind === "ai") {
+        await seedRoadmap(AI_ENGINEER_ROADMAP);
+      } else {
+        await seedDefaultRoadmapIfEmpty();
+      }
+      qc.invalidateQueries({ queryKey: ["roadmap"] });
+    } catch (e) {
+      console.error("Seed failed:", e);
+    } finally {
+      setSeeding(null);
     }
-  }, [data, seeded, qc]);
+  }
 
   const milestones = data?.milestones ?? [];
   const topics = data?.topics ?? [];
