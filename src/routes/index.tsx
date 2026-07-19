@@ -43,6 +43,9 @@ function daysLeft() {
 function RoadmapPage() {
   const { data } = useQuery({ queryKey: ["roadmap"], queryFn: fetchRoadmap });
   const qc = useQueryClient();
+  const { user } = useAuth();
+  const nav = useNavigate();
+  const canEdit = !!user;
 
   const mutate = useMutation({
     mutationFn: ({ id, patch }: { id: string; patch: Partial<Topic> }) => updateTopic(id, patch),
