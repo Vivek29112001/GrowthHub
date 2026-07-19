@@ -261,10 +261,12 @@ function TopicList({
   topics,
   onToggle,
   onProgress,
+  canEdit,
 }: {
   topics: Topic[];
   onToggle: (t: Topic) => void;
   onProgress: (t: Topic) => void;
+  canEdit: boolean;
 }) {
   // Group by group_label
   const groups = new Map<string, Topic[]>();
