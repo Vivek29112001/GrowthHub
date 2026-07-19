@@ -1,9 +1,32 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
-import { CheckCircle2, Circle, Loader2, Target, Trophy, Sparkles, LogIn, LogOut, Lock } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  CheckCircle2,
+  Circle,
+  Loader2,
+  Target,
+  Trophy,
+  Sparkles,
+  LogOut,
+  Plus,
+  Pencil,
+  Trash2,
+  X,
+  Check,
+} from "lucide-react";
 
-import { fetchRoadmap, updateTopic, type Topic } from "@/lib/roadmap";
+import {
+  fetchRoadmap,
+  updateTopic,
+  createMilestone,
+  updateMilestone,
+  deleteMilestone,
+  createTopic,
+  deleteTopic,
+  type Topic,
+  type Milestone,
+} from "@/lib/roadmap";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,54 +34,42 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "AI Engineer Roadmap Tracker — Vivek Sharma" },
+      { title: "My Roadmap Tracker" },
       {
         name: "description",
-        content:
-          "A 120-day learning map to MAANG/FAANG-level AI Engineer readiness. Track every milestone, topic, and project in one place.",
+        content: "Build, edit, and track your own personal learning or project roadmap.",
       },
-      { property: "og:title", content: "AI Engineer Roadmap Tracker — Vivek Sharma" },
-      {
-        property: "og:description",
-        content: "Digital tracker for a 120-day AI Engineer learning roadmap.",
-      },
+      { property: "og:title", content: "My Roadmap Tracker" },
+      { property: "og:description", content: "Your personal digital roadmap tracker." },
       { property: "og:type", content: "website" },
     ],
   }),
-  loader: ({ context }) =>
-    context.queryClient.ensureQueryData({ queryKey: ["roadmap"], queryFn: fetchRoadmap }),
   component: RoadmapPage,
 });
 
-// Target: 120 days from project start (Jul 19, 2026 per goal)
-const START_DATE = new Date("2026-07-19T00:00:00Z");
-const TARGET_DATE = new Date(START_DATE.getTime() + 120 * 24 * 60 * 60 * 1000);
+function RoadmapPage() {
+  const { user, loading } = useAuth();
+  const nav = useNavigate();
 
-function daysLeft() {
-  const now = new Date();
-  const ms = TARGET_DATE.getTime() - now.getTime();
-  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
+  useEffect(() => {
+    if (!loading && !user) nav({ to: "/auth" });
+  }, [loading, user, nav]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background text-muted-foreground">
+        <Loader2 className="h-5 w-5 animate-spin" />
+      </div>
+    );
+  }
+  if (!user) return null;
+
+  return <Dashboard />;
 }
 
-function RoadmapPage() {
-  const { data } = useQuery({ queryKey: ["roadmap"], queryFn: fetchRoadmap });
+function Dashboard() {
   const qc = useQueryClient();
-  const { user } = useAuth();
-  const nav = useNavigate();
-  const canEdit = !!user;
-
-  const mutate = useMutation({
-    mutationFn: ({ id, patch }: { id: string; patch: Partial<Topic> }) => updateTopic(id, patch),
-    onMutate: async ({ id, patch }) => {
-      await qc.cancelQueries({ queryKey: ["roadmap"] });
-      const prev = qc.getQueryData<{ topics: Topic[] }>(["roadmap"]);
-      qc.setQueryData<any>(["roadmap"], (old: any) =>
-        old ? { ...old, topics: old.topics.map((t: Topic) => (t.id === id ? { ...t, ...patch } : t)) } : old,
-      );
-      return { prev };
-    },
-    onError: (_e, _v, ctx) => ctx?.prev && qc.setQueryData(["roadmap"], ctx.prev),
-  });
+  const { data, isLoading } = useQuery({ queryKey: ["roadmap"], queryFn: fetchRoadmap });
 
   const milestones = data?.milestones ?? [];
   const topics = data?.topics ?? [];
@@ -71,59 +82,45 @@ function RoadmapPage() {
   }, [topics]);
 
   const [activeMilestone, setActiveMilestone] = useState<number | null>(null);
+  const [showAddMilestone, setShowAddMilestone] = useState(false);
+
+  const invalidate = () => qc.invalidateQueries({ queryKey: ["roadmap"] });
+
+  const toggleTopic = useMutation({
+    mutationFn: ({ id, patch }: { id: string; patch: Partial<Topic> }) => updateTopic(id, patch),
+    onSuccess: invalidate,
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Hero */}
       <header className="border-b border-border/60 bg-gradient-to-b from-secondary/40 to-transparent">
-        <div className="mx-auto max-w-6xl px-6 py-14">
+        <div className="mx-auto max-w-6xl px-6 py-10">
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
                 <Sparkles className="h-3.5 w-3.5" />
-                120-day learning map
+                Your personal roadmap
               </div>
-              <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
-                AI Engineer Roadmap Tracker
+              <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+                My Roadmap Tracker
               </h1>
-              <p className="mt-3 max-w-2xl text-base text-muted-foreground">
-                Vivek Sharma · MAANG/FAANG-level AI Engineer readiness. Every milestone, every topic —
-                tracked digitally, saved to your database.
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                Add milestones and topics for any field — learning, projects, fitness, business. Everything
+                saves to your private database.
               </p>
             </div>
-            <div className="flex-none">
-              {user ? (
-                <button
-                  onClick={async () => {
-                    await supabase.auth.signOut();
-                  }}
-                  className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
-                >
-                  <LogOut className="h-3.5 w-3.5" /> Sign out
-                </button>
-              ) : (
-                <Link
-                  to="/auth"
-                  className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
-                >
-                  <LogIn className="h-3.5 w-3.5" /> Sign in to edit
-                </Link>
-              )}
-            </div>
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+              }}
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+            >
+              <LogOut className="h-3.5 w-3.5" /> Sign out
+            </button>
           </div>
 
-
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            <StatCard
-              icon={<Target className="h-4 w-4" />}
-              label="Target date"
-              value={TARGET_DATE.toLocaleDateString(undefined, {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-              sub={`${daysLeft()} days left`}
-            />
+            <StatCard icon={<Target className="h-4 w-4" />} label="Milestones" value={`${milestones.length}`} />
             <StatCard
               icon={<Trophy className="h-4 w-4" />}
               label="Topics complete"
@@ -148,91 +145,73 @@ function RoadmapPage() {
         </div>
       </header>
 
-      {/* Milestones */}
       <main className="mx-auto max-w-6xl px-6 py-10">
-        <h2 className="mb-6 text-lg font-semibold">Milestones</h2>
-        <div className="space-y-3">
-          {milestones.map((m) => {
-            const mTopics = topics.filter((t) => t.milestone_id === m.id);
-            const done = mTopics.filter((t) => t.done).length;
-            const pct = mTopics.length ? Math.round((done / mTopics.length) * 100) : 0;
-            const isOpen = activeMilestone === m.id;
-            return (
-              <div
-                key={m.id}
-                className="overflow-hidden rounded-xl border border-border bg-card"
-              >
-                <button
-                  onClick={() => setActiveMilestone(isOpen ? null : m.id)}
-                  className="flex w-full items-center gap-4 px-5 py-4 text-left transition hover:bg-accent/40"
-                >
-                  <div className="flex h-10 w-10 flex-none items-center justify-center rounded-lg bg-secondary text-sm font-semibold text-secondary-foreground">
-                    {m.id}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                      <h3 className="text-base font-semibold">{m.title}</h3>
-                      <span className="text-xs text-muted-foreground">{m.outcome}</span>
-                    </div>
-                    <div className="mt-2 flex items-center gap-3">
-                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-                        <div
-                          className={cn(
-                            "h-full rounded-full transition-all",
-                            pct === 100 ? "bg-emerald-500" : "bg-primary",
-                          )}
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <span className="w-16 text-right text-xs tabular-nums text-muted-foreground">
-                        {done}/{mTopics.length}
-                      </span>
-                    </div>
-                  </div>
-                </button>
-
-                {isOpen && (
-                  <div className="border-t border-border bg-background/50 px-5 py-4">
-                    {!canEdit && (
-                      <div className="mb-3 flex items-center gap-2 rounded-md border border-border bg-secondary/60 px-3 py-2 text-xs text-muted-foreground">
-                        <Lock className="h-3.5 w-3.5" />
-                        <span>Viewing only.</span>
-                        <button
-                          onClick={() => nav({ to: "/auth" })}
-                          className="ml-auto font-medium text-foreground hover:underline"
-                        >
-                          Sign in to edit
-                        </button>
-                      </div>
-                    )}
-                    <TopicList
-                      topics={mTopics}
-                      canEdit={canEdit}
-                      onToggle={(t) =>
-                        mutate.mutate({ id: t.id, patch: { done: !t.done, in_progress: false } })
-                      }
-                      onProgress={(t) =>
-                        mutate.mutate({
-                          id: t.id,
-                          patch: { in_progress: !t.in_progress, done: false },
-                        })
-                      }
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })}
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Milestones</h2>
+          <button
+            onClick={() => setShowAddMilestone(true)}
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            <Plus className="h-3.5 w-3.5" /> Add milestone
+          </button>
         </div>
 
+        {showAddMilestone && (
+          <MilestoneForm
+            defaultOrder={milestones.length + 1}
+            onCancel={() => setShowAddMilestone(false)}
+            onSaved={() => {
+              setShowAddMilestone(false);
+              invalidate();
+            }}
+          />
+        )}
+
+        {isLoading ? (
+          <div className="py-10 text-center text-sm text-muted-foreground">Loading…</div>
+        ) : milestones.length === 0 && !showAddMilestone ? (
+          <div className="rounded-xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+            No milestones yet. Click <b>Add milestone</b> to start your roadmap.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {milestones.map((m) => {
+              const mTopics = topics.filter((t) => t.milestone_id === m.id);
+              const done = mTopics.filter((t) => t.done).length;
+              const pct = mTopics.length ? Math.round((done / mTopics.length) * 100) : 0;
+              const isOpen = activeMilestone === m.id;
+              return (
+                <MilestoneRow
+                  key={m.id}
+                  milestone={m}
+                  topics={mTopics}
+                  isOpen={isOpen}
+                  onToggleOpen={() => setActiveMilestone(isOpen ? null : m.id)}
+                  done={done}
+                  pct={pct}
+                  onChanged={invalidate}
+                  onToggleTopic={(t) =>
+                    toggleTopic.mutate({ id: t.id, patch: { done: !t.done, in_progress: false } })
+                  }
+                  onProgressTopic={(t) =>
+                    toggleTopic.mutate({
+                      id: t.id,
+                      patch: { in_progress: !t.in_progress, done: false },
+                    })
+                  }
+                />
+              );
+            })}
+          </div>
+        )}
+
         <footer className="mt-14 border-t border-border/60 pt-6 text-center text-xs text-muted-foreground">
-          Built for Vivek · Data persists in Lovable Cloud.
+          Your data · Private to your account.
         </footer>
       </main>
     </div>
   );
 }
-
 
 function StatCard({
   icon,
@@ -257,80 +236,294 @@ function StatCard({
   );
 }
 
-function TopicList({
-  topics,
-  onToggle,
-  onProgress,
-  canEdit,
+function MilestoneForm({
+  defaultOrder,
+  initial,
+  onCancel,
+  onSaved,
 }: {
-  topics: Topic[];
-  onToggle: (t: Topic) => void;
-  onProgress: (t: Topic) => void;
-  canEdit: boolean;
+  defaultOrder: number;
+  initial?: Milestone;
+  onCancel: () => void;
+  onSaved: () => void;
 }) {
-  // Group by group_label
-  const groups = new Map<string, Topic[]>();
-  for (const t of topics) {
-    const k = t.group_label ?? "";
-    if (!groups.has(k)) groups.set(k, []);
-    groups.get(k)!.push(t);
+  const [title, setTitle] = useState(initial?.title ?? "");
+  const [outcome, setOutcome] = useState(initial?.outcome ?? "");
+  const [busy, setBusy] = useState(false);
+
+  async function save() {
+    if (!title.trim()) return;
+    setBusy(true);
+    try {
+      if (initial) {
+        await updateMilestone(initial.id, { title: title.trim(), outcome: outcome.trim() || null });
+      } else {
+        await createMilestone({ title: title.trim(), outcome: outcome.trim() || undefined, order_index: defaultOrder });
+      }
+      onSaved();
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
-    <div className="space-y-5">
-      {Array.from(groups.entries()).map(([label, items]) => (
-        <div key={label}>
-          {label && (
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {label}
+    <div className="mb-3 rounded-xl border border-border bg-card p-4">
+      <div className="grid gap-2 sm:grid-cols-2">
+        <input
+          autoFocus
+          placeholder="Milestone title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+        />
+        <input
+          placeholder="Outcome (optional)"
+          value={outcome}
+          onChange={(e) => setOutcome(e.target.value)}
+          className="rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
+        />
+      </div>
+      <div className="mt-3 flex justify-end gap-2">
+        <button
+          onClick={onCancel}
+          className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium hover:bg-accent"
+        >
+          <X className="h-3.5 w-3.5" /> Cancel
+        </button>
+        <button
+          onClick={save}
+          disabled={busy || !title.trim()}
+          className="inline-flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
+        >
+          <Check className="h-3.5 w-3.5" /> {initial ? "Save" : "Create"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MilestoneRow({
+  milestone,
+  topics,
+  isOpen,
+  onToggleOpen,
+  done,
+  pct,
+  onChanged,
+  onToggleTopic,
+  onProgressTopic,
+}: {
+  milestone: Milestone;
+  topics: Topic[];
+  isOpen: boolean;
+  onToggleOpen: () => void;
+  done: number;
+  pct: number;
+  onChanged: () => void;
+  onToggleTopic: (t: Topic) => void;
+  onProgressTopic: (t: Topic) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [addingTopic, setAddingTopic] = useState(false);
+  const [newTopic, setNewTopic] = useState("");
+
+  async function addTopic() {
+    if (!newTopic.trim()) return;
+    await createTopic({
+      milestone_id: milestone.id,
+      title: newTopic.trim(),
+      order_index: topics.length + 1,
+    });
+    setNewTopic("");
+    setAddingTopic(false);
+    onChanged();
+  }
+
+  async function removeMilestone() {
+    if (!confirm(`Delete "${milestone.title}" and all its topics?`)) return;
+    await deleteMilestone(milestone.id);
+    onChanged();
+  }
+
+  if (editing) {
+    return (
+      <MilestoneForm
+        defaultOrder={milestone.order_index}
+        initial={milestone}
+        onCancel={() => setEditing(false)}
+        onSaved={() => {
+          setEditing(false);
+          onChanged();
+        }}
+      />
+    );
+  }
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
+      <div className="flex items-center gap-4 px-5 py-4">
+        <button
+          onClick={onToggleOpen}
+          className="flex flex-1 items-center gap-4 text-left"
+        >
+          <div className="flex h-10 w-10 flex-none items-center justify-center rounded-lg bg-secondary text-sm font-semibold text-secondary-foreground">
+            {milestone.order_index}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h3 className="text-base font-semibold">{milestone.title}</h3>
+              {milestone.outcome && (
+                <span className="text-xs text-muted-foreground">{milestone.outcome}</span>
+              )}
+            </div>
+            <div className="mt-2 flex items-center gap-3">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+                <div
+                  className={cn(
+                    "h-full rounded-full transition-all",
+                    pct === 100 ? "bg-emerald-500" : "bg-primary",
+                  )}
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              <span className="w-16 text-right text-xs tabular-nums text-muted-foreground">
+                {done}/{topics.length}
+              </span>
+            </div>
+          </div>
+        </button>
+        <div className="flex flex-none items-center gap-1">
+          <button
+            onClick={() => setEditing(true)}
+            className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+            aria-label="Edit"
+          >
+            <Pencil className="h-4 w-4" />
+          </button>
+          <button
+            onClick={removeMilestone}
+            className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+            aria-label="Delete"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      {isOpen && (
+        <div className="border-t border-border bg-background/50 px-5 py-4">
+          <div className="mb-3 flex items-center justify-between">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Topics
+            </div>
+            <button
+              onClick={() => setAddingTopic((v) => !v)}
+              className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-xs font-medium hover:bg-accent"
+            >
+              <Plus className="h-3 w-3" /> Add topic
+            </button>
+          </div>
+
+          {addingTopic && (
+            <div className="mb-3 flex gap-2">
+              <input
+                autoFocus
+                value={newTopic}
+                onChange={(e) => setNewTopic(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addTopic()}
+                placeholder="New topic title"
+                className="flex-1 rounded-md border border-input bg-background px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-ring"
+              />
+              <button
+                onClick={addTopic}
+                className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                Add
+              </button>
             </div>
           )}
-          <div className="grid gap-1.5 sm:grid-cols-2">
-            {items.map((t) => (
-              <div
-                key={t.id}
-                className={cn(
-                  "group flex items-center gap-2 rounded-md border border-transparent px-2 py-1.5 transition hover:border-border hover:bg-accent/40",
-                  t.done && "opacity-70",
-                )}
-              >
-                <button
-                  aria-label={t.done ? "Mark not done" : "Mark done"}
-                  onClick={() => onToggle(t)}
-                  disabled={!canEdit}
-                  className="flex-none text-muted-foreground transition hover:text-primary disabled:cursor-not-allowed disabled:hover:text-muted-foreground"
-                >
-                  {t.done ? (
-                    <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                  ) : (
-                    <Circle className="h-5 w-5" />
-                  )}
-                </button>
-                <span
-                  className={cn(
-                    "flex-1 truncate text-sm",
-                    t.done && "line-through text-muted-foreground",
-                  )}
-                >
-                  {t.title}
-                </span>
-                <button
-                  onClick={() => onProgress(t)}
-                  disabled={!canEdit}
-                  className={cn(
-                    "flex-none rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider transition disabled:cursor-not-allowed",
-                    t.in_progress
-                      ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
-                      : "text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-secondary",
-                  )}
-                >
-                  {t.in_progress ? "In progress" : "Start"}
-                </button>
-              </div>
-            ))}
-          </div>
+
+          {topics.length === 0 ? (
+            <div className="py-6 text-center text-xs text-muted-foreground">
+              No topics yet. Add your first one above.
+            </div>
+          ) : (
+            <div className="grid gap-1.5 sm:grid-cols-2">
+              {topics.map((t) => (
+                <TopicItem
+                  key={t.id}
+                  topic={t}
+                  onToggle={() => onToggleTopic(t)}
+                  onProgress={() => onProgressTopic(t)}
+                  onDelete={async () => {
+                    await deleteTopic(t.id);
+                    onChanged();
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      ))}
+      )}
+    </div>
+  );
+}
+
+function TopicItem({
+  topic,
+  onToggle,
+  onProgress,
+  onDelete,
+}: {
+  topic: Topic;
+  onToggle: () => void;
+  onProgress: () => void;
+  onDelete: () => void;
+}) {
+  return (
+    <div
+      className={cn(
+        "group flex items-center gap-2 rounded-md border border-transparent px-2 py-1.5 transition hover:border-border hover:bg-accent/40",
+        topic.done && "opacity-70",
+      )}
+    >
+      <button
+        aria-label={topic.done ? "Mark not done" : "Mark done"}
+        onClick={onToggle}
+        className="flex-none text-muted-foreground transition hover:text-primary"
+      >
+        {topic.done ? (
+          <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+        ) : (
+          <Circle className="h-5 w-5" />
+        )}
+      </button>
+      <span
+        className={cn(
+          "flex-1 truncate text-sm",
+          topic.done && "line-through text-muted-foreground",
+        )}
+      >
+        {topic.title}
+      </span>
+      <button
+        onClick={onProgress}
+        className={cn(
+          "flex-none rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider transition",
+          topic.in_progress
+            ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+            : "text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-secondary",
+        )}
+      >
+        {topic.in_progress ? "In progress" : "Start"}
+      </button>
+      <button
+        onClick={onDelete}
+        className="flex-none rounded-md p-1 text-muted-foreground opacity-0 transition hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+        aria-label="Delete topic"
+      >
+        <Trash2 className="h-3.5 w-3.5" />
+      </button>
     </div>
   );
 }

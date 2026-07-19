@@ -22,14 +22,16 @@ export type Database = {
           outcome: string | null
           status: string
           title: string
+          user_id: string
         }
         Insert: {
           created_at?: string
-          id: number
+          id?: number
           order_index: number
           outcome?: string | null
           status?: string
           title: string
+          user_id: string
         }
         Update: {
           created_at?: string
@@ -38,6 +40,7 @@ export type Database = {
           outcome?: string | null
           status?: string
           title?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -52,6 +55,7 @@ export type Database = {
           order_index: number
           title: string
           updated_at: string
+          user_id: string
         }
         Insert: {
           done?: boolean
@@ -63,6 +67,7 @@ export type Database = {
           order_index: number
           title: string
           updated_at?: string
+          user_id: string
         }
         Update: {
           done?: boolean
@@ -74,6 +79,7 @@ export type Database = {
           order_index?: number
           title?: string
           updated_at?: string
+          user_id?: string
         }
         Relationships: [
           {
