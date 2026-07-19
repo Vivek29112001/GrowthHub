@@ -77,17 +77,41 @@ function RoadmapPage() {
       {/* Hero */}
       <header className="border-b border-border/60 bg-gradient-to-b from-secondary/40 to-transparent">
         <div className="mx-auto max-w-6xl px-6 py-14">
-          <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-            <Sparkles className="h-3.5 w-3.5" />
-            120-day learning map
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+                <Sparkles className="h-3.5 w-3.5" />
+                120-day learning map
+              </div>
+              <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
+                AI Engineer Roadmap Tracker
+              </h1>
+              <p className="mt-3 max-w-2xl text-base text-muted-foreground">
+                Vivek Sharma · MAANG/FAANG-level AI Engineer readiness. Every milestone, every topic —
+                tracked digitally, saved to your database.
+              </p>
+            </div>
+            <div className="flex-none">
+              {user ? (
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                  }}
+                  className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="h-3.5 w-3.5" /> Sign out
+                </button>
+              ) : (
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                >
+                  <LogIn className="h-3.5 w-3.5" /> Sign in to edit
+                </Link>
+              )}
+            </div>
           </div>
-          <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
-            AI Engineer Roadmap Tracker
-          </h1>
-          <p className="mt-3 max-w-2xl text-base text-muted-foreground">
-            Vivek Sharma · MAANG/FAANG-level AI Engineer readiness. Every milestone, every topic —
-            tracked digitally, saved to your database.
-          </p>
+
 
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             <StatCard
