@@ -10,22 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StudyRouteImport } from './routes/study'
-import { Route as ResumeRouteImport } from './routes/resume'
 import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as CertificatesRouteImport } from './routes/certificates'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as IndexRouteImport } from './routes/index'
 
 const StudyRoute = StudyRouteImport.update({
   id: '/study',
   path: '/study',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResumeRoute = ResumeRouteImport.update({
-  id: '/resume',
-  path: '/resume',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InterviewsRoute = InterviewsRouteImport.update({
@@ -48,11 +41,6 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AssistantRoute = AssistantRouteImport.update({
-  id: '/assistant',
-  path: '/assistant',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -61,76 +49,56 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/assistant': typeof AssistantRoute
   '/auth': typeof AuthRoute
   '/certificates': typeof CertificatesRoute
   '/insights': typeof InsightsRoute
   '/interviews': typeof InterviewsRoute
-  '/resume': typeof ResumeRoute
   '/study': typeof StudyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/assistant': typeof AssistantRoute
   '/auth': typeof AuthRoute
   '/certificates': typeof CertificatesRoute
   '/insights': typeof InsightsRoute
   '/interviews': typeof InterviewsRoute
-  '/resume': typeof ResumeRoute
   '/study': typeof StudyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/assistant': typeof AssistantRoute
   '/auth': typeof AuthRoute
   '/certificates': typeof CertificatesRoute
   '/insights': typeof InsightsRoute
   '/interviews': typeof InterviewsRoute
-  '/resume': typeof ResumeRoute
   '/study': typeof StudyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/assistant'
     | '/auth'
     | '/certificates'
     | '/insights'
     | '/interviews'
-    | '/resume'
     | '/study'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/assistant'
-    | '/auth'
-    | '/certificates'
-    | '/insights'
-    | '/interviews'
-    | '/resume'
-    | '/study'
+  to: '/' | '/auth' | '/certificates' | '/insights' | '/interviews' | '/study'
   id:
     | '__root__'
     | '/'
-    | '/assistant'
     | '/auth'
     | '/certificates'
     | '/insights'
     | '/interviews'
-    | '/resume'
     | '/study'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AssistantRoute: typeof AssistantRoute
   AuthRoute: typeof AuthRoute
   CertificatesRoute: typeof CertificatesRoute
   InsightsRoute: typeof InsightsRoute
   InterviewsRoute: typeof InterviewsRoute
-  ResumeRoute: typeof ResumeRoute
   StudyRoute: typeof StudyRoute
 }
 
@@ -141,13 +109,6 @@ declare module '@tanstack/react-router' {
       path: '/study'
       fullPath: '/study'
       preLoaderRoute: typeof StudyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resume': {
-      id: '/resume'
-      path: '/resume'
-      fullPath: '/resume'
-      preLoaderRoute: typeof ResumeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/interviews': {
@@ -178,13 +139,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/assistant': {
-      id: '/assistant'
-      path: '/assistant'
-      fullPath: '/assistant'
-      preLoaderRoute: typeof AssistantRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -197,12 +151,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AssistantRoute: AssistantRoute,
   AuthRoute: AuthRoute,
   CertificatesRoute: CertificatesRoute,
   InsightsRoute: InsightsRoute,
   InterviewsRoute: InterviewsRoute,
-  ResumeRoute: ResumeRoute,
   StudyRoute: StudyRoute,
 }
 export const routeTree = rootRouteImport
