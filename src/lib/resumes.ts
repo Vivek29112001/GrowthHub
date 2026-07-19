@@ -29,7 +29,7 @@ export async function saveResumeSuggestions(ai_suggestions: unknown) {
   if (!u.user) throw new Error("Not signed in");
   const { error } = await supabase
     .from("resumes")
-    .update({ ai_suggestions, updated_at: new Date().toISOString() })
+    .update({ ai_suggestions: ai_suggestions as any, updated_at: new Date().toISOString() })
     .eq("user_id", u.user.id);
   if (error) throw error;
 }
