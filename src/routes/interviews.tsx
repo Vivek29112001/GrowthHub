@@ -95,6 +95,13 @@ function InterviewsPage() {
                       </span>
                     )}
                     <select
+                      value={iv.round || "Round 1"}
+                      onChange={(e) => upd.mutate({ id: iv.id, patch: { round: e.target.value } })}
+                      className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider outline-none"
+                    >
+                      {ROUNDS.map((r) => <option key={r}>{r}</option>)}
+                    </select>
+                    <select
                       value={iv.outcome}
                       onChange={(e) => upd.mutate({ id: iv.id, patch: { outcome: e.target.value } })}
                       className={cn(
