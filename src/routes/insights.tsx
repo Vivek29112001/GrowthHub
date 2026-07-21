@@ -52,13 +52,14 @@ function InsightsPage() {
   const topicsTotal = roadmap?.topics.length ?? 0;
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-8">
-      <div className="mb-6 flex items-center justify-between">
+    <main className="mx-auto max-w-5xl px-6 py-10">
+      <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="flex items-center gap-2 text-2xl font-bold">
-            <BarChart3 className="h-6 w-6" /> Insights
+          <h1 className="flex items-center gap-3 text-3xl font-bold tracking-tight sm:text-4xl">
+            <BarChart3 className="h-7 w-7 text-primary" />
+            <span className="gradient-text">Insights</span>
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-2 text-sm text-muted-foreground">
             A month-end look at everything you did.
           </p>
         </div>

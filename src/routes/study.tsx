@@ -55,9 +55,11 @@ function StudyPage() {
   const inp = "rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring";
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-8">
-      <h1 className="text-2xl font-bold">Study Tracker</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
+    <main className="mx-auto max-w-4xl px-6 py-10">
+      <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+        <span className="gradient-text">Study Tracker</span>
+      </h1>
+      <p className="mt-2 text-sm text-muted-foreground">
         Log every study session. Keep your streak alive.
       </p>
 
