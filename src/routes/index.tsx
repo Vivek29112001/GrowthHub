@@ -95,21 +95,25 @@ function Dashboard() {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border/60 bg-gradient-to-b from-secondary/40 to-transparent">
-        <div className="mx-auto max-w-6xl px-6 py-10">
+    <div className="min-h-screen text-foreground">
+      <header className="relative overflow-hidden border-b border-white/5">
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl" />
+          <div className="absolute -top-16 right-1/4 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
+        </div>
+        <div className="mx-auto max-w-6xl px-6 py-12">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                <Sparkles className="h-3.5 w-3.5" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium uppercase tracking-widest text-white/70 backdrop-blur">
+                <Sparkles className="h-3 w-3" />
                 Your personal roadmap
               </div>
-              <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-                My GrowthHub
+              <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
+                <span className="gradient-text">My GrowthHub</span>
               </h1>
-              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-                Add milestones and topics for any field — learning, projects, fitness, business. Everything
-                saves to your private database.
+              <p className="mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
+                Add milestones and topics for any field — learning, projects, fitness, business.
+                Everything saves to your private database.
               </p>
             </div>
           </div>

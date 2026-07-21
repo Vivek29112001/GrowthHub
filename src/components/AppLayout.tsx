@@ -24,7 +24,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-muted-foreground">
+      <div className="flex min-h-screen items-center justify-center text-muted-foreground">
         <Loader2 className="h-5 w-5 animate-spin" />
       </div>
     );
@@ -32,11 +32,25 @@ export function AppLayout({ children }: { children: ReactNode }) {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <nav className="sticky top-0 z-10 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center gap-1 overflow-x-auto px-4 py-2">
-          <div className="mr-2 text-sm font-semibold">GrowthHub</div>
-          <div className="flex flex-1 gap-1">
+    <div className="min-h-screen text-foreground">
+      <nav className="sticky top-0 z-20 border-b border-white/5 bg-background/60 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6">
+          <Link to="/" className="flex items-center gap-2.5">
+            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl gradient-bg text-sm font-bold text-white shadow-lg shadow-fuchsia-500/30">
+              GH
+              <div className="absolute inset-0 rounded-xl bg-white/10 opacity-0 transition group-hover:opacity-100" />
+            </div>
+            <div className="hidden sm:block">
+              <div className="text-sm font-semibold leading-none">GrowthHub</div>
+              <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">
+                Personal Growth OS
+              </div>
+            </div>
+          </Link>
+
+          <div className="mx-2 hidden h-6 w-px bg-white/10 sm:block" />
+
+          <div className="flex flex-1 gap-1 overflow-x-auto">
             {NAV.map((n) => {
               const Icon = n.icon;
               const active = loc.pathname === n.to;
@@ -45,25 +59,30 @@ export function AppLayout({ children }: { children: ReactNode }) {
                   key={n.to}
                   to={n.to}
                   className={cn(
-                    "inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium whitespace-nowrap transition",
+                    "group relative inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium whitespace-nowrap transition",
                     active
-                      ? "bg-secondary text-foreground"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                      ? "text-white"
+                      : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
                   )}
                 >
+                  {active && (
+                    <span className="absolute inset-0 -z-10 rounded-lg gradient-bg opacity-90 shadow-lg shadow-fuchsia-500/30" />
+                  )}
                   <Icon className="h-3.5 w-3.5" />
                   {n.label}
                 </Link>
               );
             })}
           </div>
+
           <button
             onClick={async () => {
               await supabase.auth.signOut();
             }}
-            className="inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition hover:bg-white/10 hover:text-foreground"
           >
-            <LogOut className="h-3.5 w-3.5" /> Sign out
+            <LogOut className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Sign out</span>
           </button>
         </div>
       </nav>

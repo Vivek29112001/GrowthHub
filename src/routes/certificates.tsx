@@ -25,11 +25,13 @@ function CertificatesPage() {
   });
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-8">
-      <div className="mb-6 flex items-center justify-between">
+    <main className="mx-auto max-w-4xl px-6 py-10">
+      <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Certificates</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <span className="gradient-text">Certificates</span>
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
             Every certification you earn on your journey.
           </p>
         </div>
