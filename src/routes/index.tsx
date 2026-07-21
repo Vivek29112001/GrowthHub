@@ -397,38 +397,38 @@ function MilestoneRow({
 
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
-      <div className="flex items-center gap-4 px-5 py-4">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-3 py-3 sm:flex sm:gap-4 sm:px-5 sm:py-4">
         <button
           onClick={onToggleOpen}
-          className="flex flex-1 items-center gap-4 text-left"
+          className="flex min-w-0 flex-1 items-center gap-3 text-left sm:gap-4"
         >
-          <div className="flex h-10 w-10 flex-none items-center justify-center rounded-lg bg-secondary text-sm font-semibold text-secondary-foreground">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg gradient-bg text-xs font-semibold text-white shadow-md shadow-fuchsia-500/20 sm:h-10 sm:w-10 sm:text-sm">
             {milestone.order_index}
           </div>
           <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <h3 className="text-base font-semibold">{milestone.title}</h3>
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+              <h3 className="truncate text-sm font-semibold sm:text-base">{milestone.title}</h3>
               {milestone.outcome && (
-                <span className="text-xs text-muted-foreground">{milestone.outcome}</span>
+                <span className="truncate text-[11px] text-muted-foreground sm:text-xs">{milestone.outcome}</span>
               )}
             </div>
-            <div className="mt-2 flex items-center gap-3">
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
+            <div className="mt-2 flex items-center gap-2 sm:gap-3">
+              <div className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-muted">
                 <div
                   className={cn(
                     "h-full rounded-full transition-all",
-                    pct === 100 ? "bg-emerald-500" : "bg-primary",
+                    pct === 100 ? "bg-emerald-500" : "gradient-bg",
                   )}
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              <span className="w-16 text-right text-xs tabular-nums text-muted-foreground">
+              <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground sm:w-16 sm:text-right sm:text-xs">
                 {done}/{topics.length}
               </span>
             </div>
           </div>
         </button>
-        <div className="flex flex-none items-center gap-1">
+        <div className="flex shrink-0 items-center gap-0.5">
           <button
             onClick={() => setEditing(true)}
             className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
@@ -484,7 +484,7 @@ function MilestoneRow({
               No topics yet. Add your first one above.
             </div>
           ) : (
-            <div className="grid gap-1.5 sm:grid-cols-2">
+            <div className="grid gap-1.5 md:grid-cols-2">
               {topics.map((t) => (
                 <TopicItem
                   key={t.id}
