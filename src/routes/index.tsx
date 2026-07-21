@@ -101,14 +101,14 @@ function Dashboard() {
           <div className="absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl" />
           <div className="absolute -top-16 right-1/4 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl" />
         </div>
-        <div className="mx-auto max-w-6xl px-6 py-12">
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
           <div className="flex items-start justify-between gap-4">
-            <div>
+            <div className="min-w-0">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium uppercase tracking-widest text-white/70 backdrop-blur">
                 <Sparkles className="h-3 w-3" />
                 Your personal roadmap
               </div>
-              <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
+              <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-5xl">
                 <span className="gradient-text">My GrowthHub</span>
               </h1>
               <p className="mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
@@ -119,7 +119,7 @@ function Dashboard() {
           </div>
 
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
             <StatCard icon={<Target className="h-4 w-4" />} label="Milestones" value={`${milestones.length}`} />
             <StatCard
               icon={<Trophy className="h-4 w-4" />}
@@ -127,16 +127,16 @@ function Dashboard() {
               value={`${stats.done} / ${stats.total}`}
               sub={`${stats.inProg} in progress`}
             />
-            <div className="rounded-xl border border-border bg-card p-5">
+            <div className="rounded-xl border border-border bg-card p-4 sm:p-5">
               <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <span className="flex items-center gap-2">
-                  <Loader2 className="h-4 w-4" /> Overall progress
+                <span className="flex min-w-0 items-center gap-2 truncate">
+                  <Loader2 className="h-4 w-4 shrink-0" /> Overall progress
                 </span>
-                <span className="font-semibold text-foreground">{stats.pct}%</span>
+                <span className="shrink-0 font-semibold text-foreground">{stats.pct}%</span>
               </div>
               <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full rounded-full bg-primary transition-all duration-500"
+                  className="h-full rounded-full gradient-bg transition-all duration-500"
                   style={{ width: `${stats.pct}%` }}
                 />
               </div>
@@ -145,14 +145,14 @@ function Dashboard() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-10">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Milestones</h2>
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+        <div className="mb-5 flex items-center justify-between gap-3 sm:mb-6">
+          <h2 className="text-base font-semibold sm:text-lg">Milestones</h2>
           <button
             onClick={() => setShowAddMilestone(true)}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md gradient-bg px-3 py-1.5 text-xs font-medium text-white shadow-lg shadow-fuchsia-500/20 hover:opacity-90"
           >
-            <Plus className="h-3.5 w-3.5" /> Add milestone
+            <Plus className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Add milestone</span><span className="sm:hidden">Add</span>
           </button>
         </div>
 
@@ -519,14 +519,14 @@ function TopicItem({
   return (
     <div
       className={cn(
-        "group flex items-center gap-2 rounded-md border border-transparent px-2 py-1.5 transition hover:border-border hover:bg-accent/40",
+        "group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 rounded-md border border-transparent px-2 py-1.5 transition hover:border-border hover:bg-accent/40",
         topic.done && "opacity-70",
       )}
     >
       <button
         aria-label={topic.done ? "Mark not done" : "Mark done"}
         onClick={onToggle}
-        className="flex-none text-muted-foreground transition hover:text-primary"
+        className="shrink-0 text-muted-foreground transition hover:text-primary"
       >
         {topic.done ? (
           <CheckCircle2 className="h-5 w-5 text-emerald-500" />
@@ -536,30 +536,32 @@ function TopicItem({
       </button>
       <span
         className={cn(
-          "flex-1 truncate text-sm",
+          "min-w-0 truncate text-sm",
           topic.done && "line-through text-muted-foreground",
         )}
       >
         {topic.title}
       </span>
-      <button
-        onClick={onProgress}
-        className={cn(
-          "flex-none rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider transition",
-          topic.in_progress
-            ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
-            : "text-muted-foreground opacity-0 group-hover:opacity-100 hover:bg-secondary",
-        )}
-      >
-        {topic.in_progress ? "In progress" : "Start"}
-      </button>
-      <button
-        onClick={onDelete}
-        className="flex-none rounded-md p-1 text-muted-foreground opacity-0 transition hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
-        aria-label="Delete topic"
-      >
-        <Trash2 className="h-3.5 w-3.5" />
-      </button>
+      <div className="flex shrink-0 items-center gap-1">
+        <button
+          onClick={onProgress}
+          className={cn(
+            "rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider transition",
+            topic.in_progress
+              ? "bg-amber-500/15 text-amber-400"
+              : "text-muted-foreground hover:bg-secondary sm:opacity-0 sm:group-hover:opacity-100",
+          )}
+        >
+          {topic.in_progress ? "In progress" : "Start"}
+        </button>
+        <button
+          onClick={onDelete}
+          className="rounded-md p-1 text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive sm:opacity-0 sm:group-hover:opacity-100"
+          aria-label="Delete topic"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
     </div>
   );
 }
