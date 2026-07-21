@@ -89,11 +89,6 @@ function InterviewsPage() {
                     <Building2 className="h-4 w-4 text-primary" />
                     <h3 className="font-semibold">{iv.company}</h3>
                     {iv.role && <span className="text-sm text-muted-foreground">· {iv.role}</span>}
-                    {iv.round && (
-                      <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider">
-                        {iv.round}
-                      </span>
-                    )}
                     <select
                       value={iv.round || "Round 1"}
                       onChange={(e) => upd.mutate({ id: iv.id, patch: { round: e.target.value } })}
