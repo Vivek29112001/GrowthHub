@@ -21,13 +21,22 @@ export const Route = createFileRoute("/interviews")({
   ),
 });
 
+const ROUNDS = [
+  "Round 1",
+  "Round 2",
+  "Round 3",
+  "Round 4",
+  "Round 5",
+  "HR Round",
+  "Final Round",
+];
 const OUTCOMES = ["Pending", "Passed", "Rejected", "Offer", "Ghosted"];
 const OUTCOME_COLOR: Record<string, string> = {
-  Pending: "bg-muted text-muted-foreground",
-  Passed: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+  Pending: "bg-amber-500/15 text-amber-400",
+  Passed: "bg-emerald-500/15 text-emerald-400",
   Rejected: "bg-destructive/15 text-destructive",
   Offer: "bg-primary/15 text-primary",
-  Ghosted: "bg-amber-500/15 text-amber-600 dark:text-amber-400",
+  Ghosted: "bg-muted text-muted-foreground",
 };
 
 function InterviewsPage() {
@@ -140,7 +149,7 @@ function InterviewForm({ onDone }: { onDone: () => void }) {
   const qc = useQueryClient();
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
-  const [round, setRound] = useState("");
+  const [round, setRound] = useState("Round 1");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [outcome, setOutcome] = useState("Pending");
   const [questions, setQuestions] = useState("");
@@ -176,7 +185,9 @@ function InterviewForm({ onDone }: { onDone: () => void }) {
       <div className="grid gap-2 sm:grid-cols-2">
         <input required placeholder="Company" value={company} onChange={(e) => setCompany(e.target.value)} className={inp} />
         <input placeholder="Role (e.g., AI Engineer)" value={role} onChange={(e) => setRole(e.target.value)} className={inp} />
-        <input placeholder="Round (e.g., Phone screen, DSA, System design)" value={round} onChange={(e) => setRound(e.target.value)} className={inp} />
+        <select value={round} onChange={(e) => setRound(e.target.value)} className={inp}>
+          {ROUNDS.map((r) => <option key={r}>{r}</option>)}
+        </select>
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className={inp} />
         <select value={outcome} onChange={(e) => setOutcome(e.target.value)} className={inp}>
           {OUTCOMES.map((o) => <option key={o}>{o}</option>)}
