@@ -168,6 +168,27 @@ function AuthPage() {
                   Back to sign in
                 </button>
               </div>
+            ) : resetSentTo ? (
+              <div className="mt-8 text-center">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500/20 to-fuchsia-500/20 text-fuchsia-300 ring-1 ring-white/10">
+                  <CheckCircle2 className="h-7 w-7" />
+                </div>
+                <h2 className="mt-5 text-2xl font-semibold text-white">Reset link sent</h2>
+                <p className="mt-2 text-sm text-white/60">
+                  We sent a password reset link to{" "}
+                  <span className="font-medium text-white">{resetSentTo}</span>. Open the
+                  email and click the link to set a new password.
+                </p>
+                <button
+                  onClick={() => {
+                    setResetSentTo(null);
+                    setMode("signin");
+                  }}
+                  className="mt-6 w-full rounded-xl border border-white/10 bg-white/5 py-2.5 text-sm font-medium text-white/90 transition hover:bg-white/10"
+                >
+                  Back to sign in
+                </button>
+              </div>
             ) : (
               <>
                 {/* mode tabs */}
@@ -188,12 +209,18 @@ function AuthPage() {
                 </div>
 
                 <h2 className="mt-6 text-xl font-semibold text-white">
-                  {mode === "signin" ? "Welcome back" : "Start your journey"}
+                  {mode === "signin"
+                    ? "Welcome back"
+                    : mode === "signup"
+                    ? "Start your journey"
+                    : "Reset your password"}
                 </h2>
                 <p className="mt-1 text-sm text-white/50">
                   {mode === "signin"
                     ? "Sign in to continue tracking your growth."
-                    : "Create an account to build your personal roadmap."}
+                    : mode === "signup"
+                    ? "Create an account to build your personal roadmap."
+                    : "Enter your email and we'll send you a reset link."}
                 </p>
 
                 <form onSubmit={submit} className="mt-6 space-y-3">
@@ -210,20 +237,37 @@ function AuthPage() {
                       className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder:text-white/30 outline-none transition focus:border-fuchsia-400/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-fuchsia-500/20"
                     />
                   </div>
-                  <div>
-                    <label className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-white/50">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      required
-                      minLength={6}
-                      placeholder="Min 6 characters"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder:text-white/30 outline-none transition focus:border-fuchsia-400/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-fuchsia-500/20"
-                    />
-                  </div>
+                  {mode !== "forgot" && (
+                    <div>
+                      <div className="mb-1.5 flex items-center justify-between">
+                        <label className="block text-[11px] font-medium uppercase tracking-wider text-white/50">
+                          Password
+                        </label>
+                        {mode === "signin" && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setErr(null);
+                              setMode("forgot");
+                            }}
+                            className="inline-flex items-center gap-1 text-[11px] font-medium text-fuchsia-300 hover:text-fuchsia-200"
+                          >
+                            <KeyRound className="h-3 w-3" />
+                            Forgot?
+                          </button>
+                        )}
+                      </div>
+                      <input
+                        type="password"
+                        required
+                        minLength={6}
+                        placeholder="Min 6 characters"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder:text-white/30 outline-none transition focus:border-fuchsia-400/50 focus:bg-white/[0.06] focus:ring-2 focus:ring-fuchsia-500/20"
+                      />
+                    </div>
+                  )}
 
                   {err && (
                     <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
@@ -241,7 +285,11 @@ function AuthPage() {
                         <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
                         <>
-                          {mode === "signin" ? "Sign in" : "Create account"}
+                          {mode === "signin"
+                            ? "Sign in"
+                            : mode === "signup"
+                            ? "Create account"
+                            : "Send reset link"}
                           <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
                         </>
                       )}
@@ -260,7 +308,7 @@ function AuthPage() {
                         Create an account
                       </button>
                     </>
-                  ) : (
+                  ) : mode === "signup" ? (
                     <>
                       Already have an account?{" "}
                       <button
@@ -270,6 +318,13 @@ function AuthPage() {
                         Sign in
                       </button>
                     </>
+                  ) : (
+                    <button
+                      onClick={() => setMode("signin")}
+                      className="font-medium text-fuchsia-300 hover:text-fuchsia-200"
+                    >
+                      Back to sign in
+                    </button>
                   )}
                 </div>
               </>
