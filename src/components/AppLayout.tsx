@@ -107,8 +107,8 @@ export function AppLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen text-foreground">
-      <nav className="sticky top-0 z-20 border-b border-white/5 bg-background/60 backdrop-blur-xl">
+    <div className="min-h-screen text-foreground lg:pl-72">
+      <nav className="sticky top-0 z-20 border-b border-white/5 bg-background/60 backdrop-blur-xl lg:hidden">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6">
           <button
             onClick={() => setDrawer(true)}
@@ -156,22 +156,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
                     <UserIcon className="h-3.5 w-3.5" />
                     View & edit profile
                   </Link>
-                  <Link
-                    to="/profile"
-                    onClick={() => setOpen(false)}
-                    className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-foreground/90 hover:bg-white/5"
-                  >
-                    <KeyRound className="h-3.5 w-3.5" />
-                    Change password
-                  </Link>
-                  <Link
-                    to="/profile"
-                    onClick={() => setOpen(false)}
-                    className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-medium text-foreground/90 hover:bg-white/5"
-                  >
-                    <Settings className="h-3.5 w-3.5" />
-                    Account settings
-                  </Link>
                 </div>
                 <div className="border-t border-white/5 p-1">
                   <button
@@ -192,26 +176,26 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </div>
       </nav>
 
-      {/* Mobile side drawer */}
+      {/* Sidebar: drawer on small screens, static on lg+ */}
       <div
         className={cn(
-          "fixed inset-0 z-40",
-          drawer ? "pointer-events-auto" : "pointer-events-none",
+          "fixed inset-0 z-40 lg:pointer-events-auto",
+          drawer ? "pointer-events-auto" : "pointer-events-none lg:pointer-events-auto",
         )}
         aria-hidden={!drawer}
       >
-        {/* Backdrop */}
+        {/* Backdrop (mobile only) */}
         <div
           onClick={() => setDrawer(false)}
           className={cn(
-            "absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300",
+            "absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden",
             drawer ? "opacity-100" : "opacity-0",
           )}
         />
         {/* Panel */}
         <aside
           className={cn(
-            "absolute inset-y-0 left-0 flex w-72 max-w-[85%] flex-col border-r border-white/10 bg-[#0f0f1a]/95 shadow-2xl backdrop-blur-xl transition-transform duration-300",
+            "absolute inset-y-0 left-0 flex w-72 max-w-[85%] flex-col border-r border-white/10 bg-[#0f0f1a]/95 shadow-2xl backdrop-blur-xl transition-transform duration-300 lg:max-w-none lg:translate-x-0 lg:shadow-none",
             drawer ? "translate-x-0" : "-translate-x-full",
           )}
         >
@@ -230,7 +214,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
             <button
               onClick={() => setDrawer(false)}
               aria-label="Close menu"
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-foreground/80 hover:bg-white/10"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-foreground/80 hover:bg-white/10 lg:hidden"
             >
               <X className="h-4 w-4" />
             </button>
