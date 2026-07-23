@@ -195,7 +195,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Mobile side drawer */}
       <div
         className={cn(
-          "fixed inset-0 z-40 md:hidden",
+          "fixed inset-0 z-40",
           drawer ? "pointer-events-auto" : "pointer-events-none",
         )}
         aria-hidden={!drawer}
