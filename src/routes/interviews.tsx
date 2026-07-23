@@ -121,6 +121,7 @@ function InterviewsPage() {
                     <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                       <Calendar className="h-3 w-3" /> {iv.interview_date}
                     </div>
+                    <RoundTracker round={iv.round || "Round 1"} outcome={iv.outcome} />
                     {iv.questions && (
                       <div className="mt-3">
                         <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Questions</div>
