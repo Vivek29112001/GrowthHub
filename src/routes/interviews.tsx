@@ -39,6 +39,63 @@ const OUTCOME_COLOR: Record<string, string> = {
   Ghosted: "bg-muted text-muted-foreground",
 };
 
+function RoundTracker({ round, outcome }: { round: string; outcome: string }) {
+  const idx = Math.max(0, ROUNDS.indexOf(round));
+  const rejected = outcome === "Rejected" || outcome === "Ghosted";
+  const offer = outcome === "Offer";
+  const passed = outcome === "Passed";
+  // Completed rounds: rounds strictly before current are completed; current is completed if passed/offer.
+  const lastCompleted = offer ? ROUNDS.length - 1 : passed ? idx : idx - 1;
+
+  return (
+    <div className="mt-3 overflow-x-auto">
+      <div className="flex min-w-max items-center gap-1">
+        {ROUNDS.map((r, i) => {
+          const isCurrent = i === idx;
+          const isDone = i <= lastCompleted;
+          const isFailedHere = rejected && i === idx;
+          const dotClass = isFailedHere
+            ? "bg-destructive text-destructive-foreground border-destructive"
+            : isDone
+              ? "bg-emerald-500 text-white border-emerald-500"
+              : isCurrent
+                ? "bg-primary text-primary-foreground border-primary animate-pulse"
+                : "bg-muted text-muted-foreground border-border";
+          const lineClass =
+            i < ROUNDS.length - 1
+              ? i < lastCompleted
+                ? "bg-emerald-500"
+                : i === lastCompleted && !rejected
+                  ? "bg-gradient-to-r from-emerald-500 to-primary"
+                  : "bg-border"
+              : "";
+          return (
+            <div key={r} className="flex items-center">
+              <div className="flex flex-col items-center gap-1">
+                <div
+                  className={cn(
+                    "flex h-6 w-6 items-center justify-center rounded-full border text-[10px] font-bold",
+                    dotClass,
+                  )}
+                  title={r}
+                >
+                  {isFailedHere ? "×" : isDone ? "✓" : i + 1}
+                </div>
+                <div className={cn("text-[9px] font-medium uppercase tracking-wider", isCurrent ? "text-primary" : "text-muted-foreground")}>
+                  {r.replace("Round ", "R").replace("HR Round", "HR").replace("Final Round", "Final")}
+                </div>
+              </div>
+              {i < ROUNDS.length - 1 && (
+                <div className={cn("mx-1 mb-4 h-0.5 w-6 rounded", lineClass)} />
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function InterviewsPage() {
   const qc = useQueryClient();
   const { data = [] } = useQuery({ queryKey: ["interviews"], queryFn: listInterviews });
@@ -121,6 +178,7 @@ function InterviewsPage() {
                     <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                       <Calendar className="h-3 w-3" /> {iv.interview_date}
                     </div>
+                    <RoundTracker round={iv.round || "Round 1"} outcome={iv.outcome} />
                     {iv.questions && (
                       <div className="mt-3">
                         <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Questions</div>
