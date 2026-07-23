@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StudyRouteImport } from './routes/study'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as InterviewsRouteImport } from './routes/interviews'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as CertificatesRouteImport } from './routes/certificates'
@@ -19,6 +21,16 @@ import { Route as IndexRouteImport } from './routes/index'
 const StudyRoute = StudyRouteImport.update({
   id: '/study',
   path: '/study',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InterviewsRoute = InterviewsRouteImport.update({
@@ -53,6 +65,8 @@ export interface FileRoutesByFullPath {
   '/certificates': typeof CertificatesRoute
   '/insights': typeof InsightsRoute
   '/interviews': typeof InterviewsRoute
+  '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/study': typeof StudyRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +75,8 @@ export interface FileRoutesByTo {
   '/certificates': typeof CertificatesRoute
   '/insights': typeof InsightsRoute
   '/interviews': typeof InterviewsRoute
+  '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/study': typeof StudyRoute
 }
 export interface FileRoutesById {
@@ -70,6 +86,8 @@ export interface FileRoutesById {
   '/certificates': typeof CertificatesRoute
   '/insights': typeof InsightsRoute
   '/interviews': typeof InterviewsRoute
+  '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/study': typeof StudyRoute
 }
 export interface FileRouteTypes {
@@ -80,9 +98,19 @@ export interface FileRouteTypes {
     | '/certificates'
     | '/insights'
     | '/interviews'
+    | '/profile'
+    | '/reset-password'
     | '/study'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/certificates' | '/insights' | '/interviews' | '/study'
+  to:
+    | '/'
+    | '/auth'
+    | '/certificates'
+    | '/insights'
+    | '/interviews'
+    | '/profile'
+    | '/reset-password'
+    | '/study'
   id:
     | '__root__'
     | '/'
@@ -90,6 +118,8 @@ export interface FileRouteTypes {
     | '/certificates'
     | '/insights'
     | '/interviews'
+    | '/profile'
+    | '/reset-password'
     | '/study'
   fileRoutesById: FileRoutesById
 }
@@ -99,6 +129,8 @@ export interface RootRouteChildren {
   CertificatesRoute: typeof CertificatesRoute
   InsightsRoute: typeof InsightsRoute
   InterviewsRoute: typeof InterviewsRoute
+  ProfileRoute: typeof ProfileRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   StudyRoute: typeof StudyRoute
 }
 
@@ -109,6 +141,20 @@ declare module '@tanstack/react-router' {
       path: '/study'
       fullPath: '/study'
       preLoaderRoute: typeof StudyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/interviews': {
@@ -155,6 +201,8 @@ const rootRouteChildren: RootRouteChildren = {
   CertificatesRoute: CertificatesRoute,
   InsightsRoute: InsightsRoute,
   InterviewsRoute: InterviewsRoute,
+  ProfileRoute: ProfileRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   StudyRoute: StudyRoute,
 }
 export const routeTree = rootRouteImport
