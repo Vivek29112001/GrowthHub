@@ -110,57 +110,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
     <div className="min-h-screen text-foreground">
       <nav className="sticky top-0 z-20 border-b border-white/5 bg-background/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6">
-          {/* Mobile hamburger */}
           <button
             onClick={() => setDrawer(true)}
             aria-label="Open menu"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-foreground transition hover:bg-white/10 md:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-foreground transition hover:bg-white/10"
           >
             <Menu className="h-4 w-4" />
           </button>
 
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl gradient-bg text-sm font-bold text-white shadow-lg shadow-fuchsia-500/30">
-              GH
-            </div>
-            <div className="hidden sm:block">
-              <div className="text-sm font-semibold leading-none">GrowthHub</div>
-              <div className="mt-1 text-[10px] uppercase tracking-widest text-muted-foreground">
-                Personal Growth OS
-              </div>
-            </div>
-          </Link>
-
-          <div className="mx-2 hidden h-6 w-px bg-white/10 md:block" />
-
-          {/* Desktop nav — hidden on mobile */}
-          <div className="hidden flex-1 gap-1 md:flex">
-            {NAV.map((n) => {
-              const Icon = n.icon;
-              const active = loc.pathname === n.to;
-              return (
-                <Link
-                  key={n.to}
-                  to={n.to}
-                  className={cn(
-                    "group relative inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium whitespace-nowrap transition",
-                    active
-                      ? "text-white"
-                      : "text-muted-foreground hover:bg-white/5 hover:text-foreground",
-                  )}
-                >
-                  {active && (
-                    <span className="absolute inset-0 -z-10 rounded-lg gradient-bg opacity-90 shadow-lg shadow-fuchsia-500/30" />
-                  )}
-                  <Icon className="h-3.5 w-3.5" />
-                  {n.label}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Spacer on mobile so profile stays right-aligned */}
-          <div className="flex-1 md:hidden" />
+          <div className="flex-1" />
 
           <div ref={menuRef} className="relative">
             <button
@@ -237,7 +195,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
       {/* Mobile side drawer */}
       <div
         className={cn(
-          "fixed inset-0 z-40 md:hidden",
+          "fixed inset-0 z-40",
           drawer ? "pointer-events-auto" : "pointer-events-none",
         )}
         aria-hidden={!drawer}
