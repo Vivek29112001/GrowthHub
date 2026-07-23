@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Mail, Sparkles, Target, Award, Clock, ArrowRight, Loader2 } from "lucide-react";
+import { Mail, Sparkles, Target, Award, Clock, ArrowRight, Loader2, KeyRound, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
