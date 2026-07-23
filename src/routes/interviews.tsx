@@ -141,13 +141,15 @@ function InterviewsPage() {
                     )}
                   </div>
                   <div className="flex flex-col items-center gap-2">
-                    <button
-                      onClick={() => setEditingId(iv.id)}
-                      className="text-muted-foreground transition hover:text-primary"
-                      aria-label="Edit"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </button>
+                    {iv.outcome !== "Rejected" && (
+                      <button
+                        onClick={() => setEditingId(iv.id)}
+                        className="text-muted-foreground transition hover:text-primary"
+                        aria-label="Edit"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                    )}
                     <button
                       onClick={() => confirm(`Delete interview at ${iv.company}?`) && del.mutate(iv.id)}
                       className="text-muted-foreground transition hover:text-destructive"
